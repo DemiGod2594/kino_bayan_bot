@@ -10,7 +10,7 @@ class DatabaseManager(object):
         self.cur = self.conn.cursor()
 
     def create_tables(self):
-        self.query('CREATE TABLE IF NOT EXISTS links (cid int, link text)')
+        self.query('CREATE TABLE IF NOT EXISTS links (id INTEGER PRIMARY KEY, link TEXT)')
 
     def query(self, arg, values=None):
         if values == None:

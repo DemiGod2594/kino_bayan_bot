@@ -7,7 +7,7 @@ from config_data.config import Config, load_config
 
 config: Config = load_config()
 
-bot = Bot(token=config.tg_bot.token, parse_mode=ParseMode.HTML)
+bot = Bot(token=config.tg_bot.token)
 storage = MemoryStorage()
-dp = Dispatcher(bot, storage=storage)
+dp = Dispatcher(storage=storage)
 db = DatabaseManager('config_data/database.db')

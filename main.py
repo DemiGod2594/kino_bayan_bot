@@ -7,7 +7,7 @@ from config_data.config import Config, load_config
 # from handlers import user_handlers
 # from utils.db.storage import
 from aiogram.filters import CommandStart
-
+from handlers.user.menu import keyboaard, kb
 
 config: Config = load_config()
 
@@ -22,7 +22,7 @@ kb_builder.row(user_message, admin_message, width=1)
 
 keyboard: ReplyKeyboardMarkup = kb_builder.as_markup(
     resize_keyboard=True,
-    one_time_keyboard=True,
+    one_time_keyboard=True
 )
 
 
@@ -41,23 +41,27 @@ async def user_mode(message: types.Message):
     if cid in config.tg_bot.admin_ids:
         config.tg_bot.admin_ids.remove(cid)
 
-    await message.answer('Включен пользовательский режим.', reply_markup=ReplyKeyboardRemove())
+    await message.answer('Включен пользовательский режим.', reply_markup=keyboaard)
     await message.delete()
+
 
 @dp.message(F.text == 'Админ')
 async def admin_mode(message: types.Message):
 
     cid = message.chat.id
     if cid not in config.tg_bot.admin_ids:
-        await message.answer("Вы не админ", reply_markup=ReplyKeyboardRemove())
+        await message.answer("Вы не админ", reply_markup=keyboaard)
         await message.delete()
     else:
-        await message.answer('Включен админский режим.', reply_markup=ReplyKeyboardRemove())
+        await message.answer('Включен админский режим.', reply_markup=kb)
         await message.delete()
+
+
 
 
 async def main() -> None:
     bot = Bot(token=config.tg_bot.token)
+
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
