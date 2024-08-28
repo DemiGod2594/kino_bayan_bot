@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from environs import Env
 
+ADMIN_IDS = 1009357442
+
 
 @dataclass
 class TgBot:
     token: str
-    admin_ids: list[int]
+    #admin_ids: list[int]
 
 
 @dataclass
@@ -19,6 +21,6 @@ def load_config(path: str | None = None) -> Config:
     return Config(
         tg_bot=TgBot(
             token=env("BOT_TOKEN"),
-            admin_ids=list(map(int, env.list("ADMIN_IDS")))
+            #admin_ids=list(map(int, env.list("ADMIN_IDS")))
         )
     )

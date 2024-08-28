@@ -1,9 +1,8 @@
 import sqlite3
-from loader import db
 
 
 def add_id_to_db(id):
-    conn = sqlite3.connect(db)
+    conn = sqlite3.connect('config_data/database.db')
     cursor = conn.cursor()
 
     cursor.execute('SELECT id FROM links WHERE id = ?', (id,))
@@ -14,7 +13,7 @@ def add_id_to_db(id):
 
 
 def add_message_to_id(id, link):
-    conn = sqlite3.connect(db)
+    conn = sqlite3.connect('config_data/database.db')
     cursor = conn.cursor()
 
     cursor.execute('SELECT link FROM links WHERE id = ?', (id,))
