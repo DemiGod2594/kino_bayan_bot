@@ -1,26 +1,8 @@
-from dataclasses import dataclass
-from environs import Env
+from dotenv import load_dotenv
+import os
 
-ADMIN_IDS = 1009357442
-
-
-@dataclass
-class TgBot:
-    token: str
-    #admin_ids: list[int]
+load_dotenv()
 
 
-@dataclass
-class Config:
-    tg_bot: TgBot
-
-
-def load_config(path: str | None = None) -> Config:
-    env = Env()
-    env.read_env(path)
-    return Config(
-        tg_bot=TgBot(
-            token=env("BOT_TOKEN"),
-            #admin_ids=list(map(int, env.list("ADMIN_IDS")))
-        )
-    )
+token = os.environ.get('BOT_TOKEN')
+admin_ids = list(map(int, os.environ.get('ADMIN_IDS', '').split(',')))
