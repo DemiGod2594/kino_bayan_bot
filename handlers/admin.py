@@ -2,10 +2,12 @@ from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from config_data.config import admin_ids
 from aiogram.filters import Command, StateFilter
-
 from utils.function.add_to_db import add_id_to_db, add_message_to_id
 from utils.function.all_links import get_all_messages
 from utils.function.delete_links import delete_all
+
+import io
+from aiogram.types import FSInputFile
 
 admin_router = Router()
 
@@ -44,8 +46,10 @@ async def handle_admin_link(message: types.Message, state: FSMContext):
 
 @admin_router.message(Command(commands=['view']))
 async def handle_view(message: types.Message):
+    print('Команда /view была вызвана. Администратор')
     if message.from_user.id in admin_ids:
         all_links = get_all_messages()
+        print(all_links)
         if not all_links:
             await message.reply('База данных пуста.')
             return
@@ -54,6 +58,16 @@ async def handle_view(message: types.Message):
         for record in all_links:
             id, link = record
             response += f"ID: {id}\nСсылка:\n{link}\n\n"
+        if len(response) > 4096:
+            file_data = io.StringIO(response)
+            file_data.seek(0)
+            await message.reply_document(
+                FSInputFile(file_data, filename='links.txt'),
+                caption="Содержимое базы данных"
+            )
+        else:
+            await message.reply(response)
+
     else:
         await message.reply('Вы не админ.')
 
