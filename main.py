@@ -1,4 +1,5 @@
 import asyncio
+import signal
 
 from aiogram import types
 from aiogram.filters import Command
@@ -22,10 +23,12 @@ async def main():
     dp.include_router(admin_router)
     dp.include_router(user_router)
 
+
     await bot.set_my_commands([
-        BotCommand(command='add_id', description='Добавить новый ID'),
-        BotCommand(command='view', description='Посмотреть содержание базы данных'),
-        BotCommand(command='delete', description='Удалить запись по ID'),
+        BotCommand(command='start', description='Команда для начала работы'),
+        BotCommand(command='add_id', description='Добавить новый ID. Для администраторов'),
+        BotCommand(command='view', description='Посмотреть содержание базы данных. Для администраторов'),
+        BotCommand(command='delete', description='Удалить запись по ID. Для администраторов'),
     ])
 
     await bot.delete_webhook(drop_pending_updates=True)

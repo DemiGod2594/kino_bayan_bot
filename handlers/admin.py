@@ -46,10 +46,8 @@ async def handle_admin_link(message: types.Message, state: FSMContext):
 
 @admin_router.message(Command(commands=['view']))
 async def handle_view(message: types.Message):
-    print('Команда /view была вызвана. Администратор')
     if message.from_user.id in admin_ids:
         all_links = get_all_messages()
-        print(all_links)
         if not all_links:
             await message.reply('База данных пуста.')
             return
