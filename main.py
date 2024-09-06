@@ -1,5 +1,4 @@
 import asyncio
-import signal
 
 from aiogram import types
 from aiogram.filters import Command
