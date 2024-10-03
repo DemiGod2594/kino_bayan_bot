@@ -8,3 +8,4 @@ def init_db():
                  (id INTEGER PRIMARY KEY, link TEXT)''')
     conn.commit()
     conn.close()
+
