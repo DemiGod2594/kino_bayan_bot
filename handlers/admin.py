@@ -21,12 +21,14 @@ class AddFilmFSM(StatesGroup):
     waiting_for_link = State()
     waiting_for_delete = State()
 
-@admin_router.message(Command(commands=["admin"]))
-async def show_admin_panel(message: types.Message):
-    if message.from_user.id in admin_ids:
-        await message.reply("Админ-панель:", reply_markup=admin_keyboard())
+
+@admin_router.callback_query(lambda call: call.data == "admin")
+async def show_admin_panel(callback: CallbackQuery):
+    if callback.from_user.id in admin_ids:
+        await callback.message.answer("Админ-панель:", reply_markup=admin_keyboard())
+        await callback.message.edit_reply_markup(reply_markup=None)
     else:
-        await message.reply("У вас нет прав для использования этой команды.")
+        await callback.answer("У вас нет прав для использования этой команды.", show_alert=True)
 
 
 @admin_router.callback_query(lambda call: call.data == "add")
@@ -50,7 +52,7 @@ async def handle_admin_link(message: types.Message, state: FSMContext):
     id = data.get('id')
     if id:
         add_message_to_id(id, message.text)
-        await message.reply(f'Ссылка добавлена к ID {id}.')
+        await message.reply(f'Ссылка добавлена к ID {id}.', reply_markup=admin_keyboard())
     else:
         await message.reply('Пожалуйста добавьте ID с помощью /add_id.')
         await state.clear()
@@ -60,7 +62,7 @@ async def handle_admin_link(message: types.Message, state: FSMContext):
 async def handle_view(callback: CallbackQuery):
     all_links = get_all_messages()
     if not all_links:
-        await callback.message.reply('База данных пуста.')
+        await callback.message.reply('База данных пуста.', reply_markup=admin_keyboard())
         return
 
     response = "Содержание базы данных:\n\n"
@@ -72,10 +74,11 @@ async def handle_view(callback: CallbackQuery):
         file_data.seek(0)
         await callback.reply_document(
             FSInputFile(file_data, filename='links.txt'),
-            caption="Содержимое базы данных"
+            caption="Содержимое базы данных", reply_markup=admin_keyboard()
         )
     else:
-        await callback.message.reply(response)
+        await callback.message.reply(response, reply_markup=admin_keyboard())
+
 
 
 @admin_router.callback_query(lambda call: call.data == "delete")
@@ -88,6 +91,6 @@ async def handle_delete_message(callback: CallbackQuery, state: FSMContext):
 async def handle_delete_id(message: types.Message, state: FSMContext):
     id = int(message.text)
     delete_all(id)
-    await message.reply(f'Все ссылки с ID {id} удалены.')
+    await message.reply(f'Все ссылки с ID {id} удалены.', reply_markup=admin_keyboard())
     await state.clear()
 
